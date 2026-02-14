@@ -25,12 +25,18 @@ class ProjectApiController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string|in:template,userfile',
+            'user_id' => 'nullable|integer|exists:users,id',
             'glb_file' => 'nullable|file|max:51200',
             'json_file' => 'nullable|file|max:10240',
             'cover_image' => 'nullable|image|max:5120',
         ]);
 
-        $project = Project::create(['name' => $request->name]);
+        $project = Project::create([
+            'name' => $request->name,
+            'type' => $request->type,
+            'user_id' => $request->user_id,
+        ]);
 
         $data = $this->storeFiles($request, $project->id);
         if (!empty($data)) {
@@ -44,6 +50,8 @@ class ProjectApiController extends Controller
     {
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
+            'type' => 'sometimes|required|string|in:template,userfile',
+            'user_id' => 'nullable|integer|exists:users,id',
             'glb_file' => 'nullable|file|max:51200',
             'json_file' => 'nullable|file|max:10240',
             'cover_image' => 'nullable|image|max:5120',
@@ -53,6 +61,14 @@ class ProjectApiController extends Controller
 
         if ($request->has('name')) {
             $data['name'] = $request->name;
+        }
+
+        if ($request->has('type')) {
+            $data['type'] = $request->type;
+        }
+
+        if ($request->has('user_id')) {
+            $data['user_id'] = $request->user_id;
         }
 
         if ($request->hasFile('glb_file') && $project->glb_url) {
@@ -69,6 +85,16 @@ class ProjectApiController extends Controller
         $project->update($data);
 
         return response()->json($this->formatProject($project->fresh()));
+    }
+
+    public function myProjects(Request $request)
+    {
+        return response()->json(
+            Project::where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(fn ($a) => $this->formatProject($a))
+        );
     }
 
     public function destroy(Project $project)
@@ -106,6 +132,8 @@ class ProjectApiController extends Controller
         return [
             'id' => $project->id,
             'name' => $project->name,
+            'type' => $project->type,
+            'user_id' => $project->user_id,
             'glb_url' => $project->glb_url ? Storage::disk('public')->url($project->glb_url) : null,
             'json_url' => $project->json_url ? Storage::disk('public')->url($project->json_url) : null,
             'cover_image' => $project->cover_image ? Storage::disk('public')->url($project->cover_image) : null,

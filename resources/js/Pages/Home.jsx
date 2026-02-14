@@ -10,7 +10,7 @@ export default function Home({ projects }) {
         <AppLayout>
             <Head title="Home" />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">3D Project Library</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-6">Home Designer</h1>
 
             {projects.length === 0 ? (
                 <div className="text-center py-12">
@@ -37,7 +37,16 @@ export default function Home({ projects }) {
                                 )}
                             </div>
                             <div className="p-4">
-                                <h3 className="font-semibold text-gray-900 truncate">{project.name}</h3>
+                                <div className="flex items-center justify-between mb-1">
+                                    <h3 className="font-semibold text-gray-900 truncate">{project.name}</h3>
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${
+                                        project.type === 'template'
+                                            ? 'bg-indigo-100 text-indigo-800'
+                                            : 'bg-amber-100 text-amber-800'
+                                    }`}>
+                                        {project.type === 'template' ? 'Template' : 'User File'}
+                                    </span>
+                                </div>
                                 <div className="mt-2 flex items-center justify-between">
                                     <div className="flex space-x-2">
                                         {project.glb_url && (

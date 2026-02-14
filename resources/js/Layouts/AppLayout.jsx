@@ -10,7 +10,7 @@ export default function AppLayout({ children }) {
                     <div className="flex justify-between h-16">
                         <div className="flex items-center space-x-8">
                             <Link href="/" className="text-xl font-bold text-gray-900">
-                                3D Project Library
+                                Home Designer Web Portal
                             </Link>
                             <Link
                                 href="/"
@@ -26,6 +26,12 @@ export default function AppLayout({ children }) {
                                     Admin
                                 </Link>
                             )}
+                            <Link
+                                href="/api-test"
+                                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
+                            >
+                                API Test
+                            </Link>
                         </div>
                         <div className="flex items-center space-x-4">
                             {auth?.user ? (

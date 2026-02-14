@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -19,7 +20,8 @@ class ProjectController extends Controller
     public function admin()
     {
         return Inertia::render('Admin', [
-            'projects' => Project::orderBy('created_at', 'desc')->get(),
+            'projects' => Project::with('user')->orderBy('created_at', 'desc')->get(),
+            'users' => User::orderBy('name')->get(['id', 'name', 'email']),
         ]);
     }
 
@@ -27,12 +29,18 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string|in:template,userfile',
+            'user_id' => 'nullable|integer|exists:users,id',
             'glb_file' => 'nullable|file|max:51200',
             'json_file' => 'nullable|file|max:10240',
             'cover_image' => 'nullable|image|max:5120',
         ]);
 
-        $project = Project::create(['name' => $request->name]);
+        $project = Project::create([
+            'name' => $request->name,
+            'type' => $request->type,
+            'user_id' => $request->user_id,
+        ]);
 
         $data = $this->storeFiles($request, $project->id);
         if (!empty($data)) {
@@ -46,12 +54,14 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string|in:template,userfile',
+            'user_id' => 'nullable|integer|exists:users,id',
             'glb_file' => 'nullable|file|max:51200',
             'json_file' => 'nullable|file|max:10240',
             'cover_image' => 'nullable|image|max:5120',
         ]);
 
-        $data = ['name' => $request->name];
+        $data = ['name' => $request->name, 'type' => $request->type, 'user_id' => $request->user_id];
 
         if ($request->hasFile('glb_file') && $project->glb_url) {
             Storage::disk('public')->delete($project->glb_url);

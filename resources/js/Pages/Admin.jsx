@@ -2,11 +2,13 @@ import { Head, useForm, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { useState } from 'react';
 
-function ProjectModal({ project, onClose }) {
+function ProjectModal({ project, onClose, users = [] }) {
     const isEdit = !!project;
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: project?.name || '',
+        type: project?.type || 'template',
+        user_id: project?.user_id || '',
         glb_file: null,
         json_file: null,
         cover_image: null,
@@ -58,6 +60,40 @@ function ProjectModal({ project, onClose }) {
                             required
                         />
                         {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Type *
+                        </label>
+                        <select
+                            value={data.type}
+                            onChange={(e) => setData('type', e.target.value)}
+                            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="template">Template</option>
+                            <option value="userfile">User File</option>
+                        </select>
+                        {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type}</p>}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            User
+                        </label>
+                        <select
+                            value={data.user_id}
+                            onChange={(e) => setData('user_id', e.target.value || '')}
+                            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="">No user (system)</option>
+                            {users.map((user) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.name} ({user.email})
+                                </option>
+                            ))}
+                        </select>
+                        {errors.user_id && <p className="text-red-500 text-sm mt-1">{errors.user_id}</p>}
                     </div>
 
                     <div>
@@ -174,7 +210,7 @@ function DeleteConfirm({ project, onClose }) {
     );
 }
 
-export default function Admin({ projects, flash }) {
+export default function Admin({ projects, users, flash }) {
     const [showCreate, setShowCreate] = useState(false);
     const [editProject, setEditProject] = useState(null);
     const [deleteProject, setDeleteProject] = useState(null);
@@ -207,6 +243,12 @@ export default function Admin({ projects, flash }) {
                                 Project
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Type
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                User
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Files
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -220,7 +262,7 @@ export default function Admin({ projects, flash }) {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {projects.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                                     No projects yet. Click "Add Project" to create one.
                                 </td>
                             </tr>
@@ -244,6 +286,18 @@ export default function Admin({ projects, flash }) {
                                             </div>
                                             <span className="font-medium text-gray-900">{project.name}</span>
                                         </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                            project.type === 'template'
+                                                ? 'bg-indigo-100 text-indigo-800'
+                                                : 'bg-amber-100 text-amber-800'
+                                        }`}>
+                                            {project.type === 'template' ? 'Template' : 'User File'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-500">
+                                        {project.user ? project.user.name : '—'}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex space-x-2">
@@ -289,11 +343,11 @@ export default function Admin({ projects, flash }) {
             </div>
 
             {showCreate && (
-                <ProjectModal onClose={() => setShowCreate(false)} />
+                <ProjectModal users={users} onClose={() => setShowCreate(false)} />
             )}
 
             {editProject && (
-                <ProjectModal project={editProject} onClose={() => setEditProject(null)} />
+                <ProjectModal project={editProject} users={users} onClose={() => setEditProject(null)} />
             )}
 
             {deleteProject && (

@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('type')->default('template');
             $table->string('glb_url')->nullable();
             $table->string('json_url')->nullable();
             $table->string('cover_image')->nullable();

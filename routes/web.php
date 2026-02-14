@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', [ProjectController::class, 'index'])->name('home');
+Route::get('/api-test', fn () => Inertia::render('ApiTest'))->name('api-test');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin', [ProjectController::class, 'admin'])->name('admin');
