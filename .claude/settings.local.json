@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer create-project:*)",
+      "Bash(dir:*)",
+      "Bash(composer require:*)",
+      "Bash(php artisan breeze:install:*)",
+      "Bash(php artisan:*)",
+      "Bash(npx vite build)",
+      "Bash(curl:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
