@@ -30,11 +30,9 @@ export default function ProjectPreviewModal({ project, onClose }) {
         const container = containerRef.current;
         if (!container) return;
 
-        // Scene
         const scene = new THREE.Scene();
-        scene.background = createRadialGradientTexture('#2a2aff', '#0a0a33');
+        scene.background = createRadialGradientTexture('#1e1b4b', '#0f0a2e');
 
-        // Camera
         const camera = new THREE.PerspectiveCamera(
             50,
             container.clientWidth / container.clientHeight,
@@ -45,7 +43,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         const initialTarget = new THREE.Vector3(0, 1, 0);
         camera.position.copy(initialPosition);
 
-        // Renderer
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -56,7 +53,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         renderer.toneMappingExposure = 1.0;
         container.appendChild(renderer.domElement);
 
-        // Controls
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -65,7 +61,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         controls.maxDistance = 5;
         controls.target.copy(initialTarget);
 
-        // 3-point studio lighting
         const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
         keyLight.position.set(2, 3, 2);
         keyLight.castShadow = true;
@@ -89,7 +84,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         const ambient = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambient);
 
-        // Shadow ground
         const shadowPlane = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10),
             new THREE.ShadowMaterial({ opacity: 0.3 })
@@ -98,7 +92,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         shadowPlane.receiveShadow = true;
         scene.add(shadowPlane);
 
-        // Animation
         const clock = new THREE.Clock();
         let mixer = null;
         let model = null;
@@ -113,7 +106,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         }
         animate();
 
-        // Load GLB
         const loader = new GLTFLoader();
         const glbUrl = `/storage/${project.glb_url}`;
 
@@ -121,8 +113,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
             glbUrl,
             (gltf) => {
                 model = gltf.scene;
-
-                // Center model
                 const box = new THREE.Box3().setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
@@ -130,7 +120,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
                 model.position.y = -box.min.y;
                 model.position.z = -center.z;
 
-                // Shadows
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.castShadow = true;
@@ -138,18 +127,14 @@ export default function ProjectPreviewModal({ project, onClose }) {
                     }
                 });
 
-                // Rotate 180° on Y axis so the model faces the camera
                 model.rotation.y = Math.PI;
-
                 scene.add(model);
 
-                // Frame the model
                 const maxDim = Math.max(size.x, size.y, size.z);
                 camera.position.set(0, size.y * 0.6, maxDim * 2);
                 controls.target.set(0, size.y * 0.4, 0);
                 controls.update();
 
-                // Play animations if present
                 if (gltf.animations.length > 0) {
                     mixer = new THREE.AnimationMixer(model);
                     const action = mixer.clipAction(gltf.animations[0]);
@@ -166,7 +151,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
             }
         );
 
-        // Resize
         function onResize() {
             camera.aspect = container.clientWidth / container.clientHeight;
             camera.updateProjectionMatrix();
@@ -174,7 +158,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
         }
         window.addEventListener('resize', onResize);
 
-        // Store refs for toolbar actions
         sceneRef.current = {
             camera, controls, model: () => model,
             initialPosition, initialTarget,
@@ -189,7 +172,6 @@ export default function ProjectPreviewModal({ project, onClose }) {
             if (container.contains(renderer.domElement)) {
                 container.removeChild(renderer.domElement);
             }
-            // Dispose scene resources
             scene.traverse((child) => {
                 if (child.isMesh) {
                     child.geometry.dispose();
@@ -224,12 +206,25 @@ export default function ProjectPreviewModal({ project, onClose }) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex flex-col" style={{ background: '#0a0a33' }}>
+        <div className="fixed inset-0 z-50 flex flex-col animate-fade-in" style={{ background: '#0f0a2e' }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3" style={{ background: 'rgba(0,0,0,0.7)' }}>
-                <h2 className="text-white font-medium text-lg">{project.name}</h2>
-                <button onClick={onClose} className="text-white hover:text-gray-300 transition-colors">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center justify-between px-6 py-3.5 bg-black/40 backdrop-blur-xl border-b border-white/5">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 className="text-white font-semibold text-sm">{project.name}</h2>
+                        <p className="text-white/40 text-xs">3D Preview</p>
+                    </div>
+                </div>
+                <button
+                    onClick={onClose}
+                    className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -237,25 +232,28 @@ export default function ProjectPreviewModal({ project, onClose }) {
 
             {/* 3D Viewport */}
             <div ref={containerRef} className="flex-1 relative">
-                {/* Loading spinner */}
                 {loading && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                        <div
-                            className="w-12 h-12 border-3 rounded-full animate-spin"
-                            style={{
-                                borderWidth: '3px',
-                                borderColor: 'rgba(255,255,255,0.2)',
-                                borderTopColor: '#4fc3f7',
-                            }}
-                        />
-                        <span className="text-white text-lg">Loading model...</span>
+                        <div className="relative">
+                            <div className="w-16 h-16 rounded-full border-2 border-brand-500/20 border-t-brand-400 animate-spin" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <svg className="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                                </svg>
+                            </div>
+                        </div>
+                        <span className="text-white/60 text-sm font-medium">Loading 3D model...</span>
                     </div>
                 )}
 
-                {/* Error */}
                 {error && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-red-400 text-lg">{error}</span>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                        <div className="w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center">
+                            <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <span className="text-red-400 text-sm">{error}</span>
                     </div>
                 )}
 
@@ -264,34 +262,46 @@ export default function ProjectPreviewModal({ project, onClose }) {
                     <div className="absolute top-4 right-4 flex flex-col gap-2">
                         <button
                             onClick={resetCamera}
-                            className="text-white text-sm px-4 py-2 rounded-md transition-colors"
-                            style={{ background: 'rgba(0,0,0,0.7)' }}
-                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.9)'}
-                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
+                            className="flex items-center gap-2 text-white/70 hover:text-white text-xs font-medium px-3.5 py-2.5 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 hover:bg-black/50 transition-all"
                         >
-                            Reset View
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                            </svg>
+                            Reset
                         </button>
                         <button
                             onClick={toggleWireframe}
-                            className="text-white text-sm px-4 py-2 rounded-md transition-colors"
-                            style={{ background: wireframe ? 'rgba(79,195,247,0.5)' : 'rgba(0,0,0,0.7)' }}
-                            onMouseEnter={e => e.currentTarget.style.background = wireframe ? 'rgba(79,195,247,0.7)' : 'rgba(0,0,0,0.9)'}
-                            onMouseLeave={e => e.currentTarget.style.background = wireframe ? 'rgba(79,195,247,0.5)' : 'rgba(0,0,0,0.7)'}
+                            className={`flex items-center gap-2 text-xs font-medium px-3.5 py-2.5 rounded-xl backdrop-blur-md border transition-all ${
+                                wireframe
+                                    ? 'text-brand-300 bg-brand-500/20 border-brand-400/30'
+                                    : 'text-white/70 hover:text-white bg-black/30 border-white/10 hover:bg-black/50'
+                            }`}
                         >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                            </svg>
                             Wireframe
                         </button>
                     </div>
                 )}
 
-                {/* Controls info */}
-                <div
-                    className="absolute bottom-4 right-4 text-white text-sm rounded-lg p-4 leading-relaxed"
-                    style={{ background: 'rgba(0,0,0,0.7)' }}
-                >
-                    <h4 className="font-medium mb-2" style={{ color: '#4fc3f7' }}>Controls</h4>
-                    <div><kbd className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: 'rgba(255,255,255,0.15)' }}>Left Mouse</kbd> Rotate</div>
-                    <div><kbd className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: 'rgba(255,255,255,0.15)' }}>Right Mouse</kbd> Pan</div>
-                    <div><kbd className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: 'rgba(255,255,255,0.15)' }}>Scroll</kbd> Zoom</div>
+                {/* Controls help */}
+                <div className="absolute bottom-4 right-4 rounded-xl p-4 bg-black/30 backdrop-blur-md border border-white/10 text-white/50 text-xs leading-relaxed">
+                    <h4 className="font-semibold text-brand-300 mb-2 text-[11px] uppercase tracking-wider">Controls</h4>
+                    <div className="space-y-1.5">
+                        <div className="flex items-center gap-2">
+                            <kbd className="px-1.5 py-0.5 rounded-md text-[10px] font-mono bg-white/10 text-white/60 border border-white/5">LMB</kbd>
+                            <span>Rotate</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <kbd className="px-1.5 py-0.5 rounded-md text-[10px] font-mono bg-white/10 text-white/60 border border-white/5">RMB</kbd>
+                            <span>Pan</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <kbd className="px-1.5 py-0.5 rounded-md text-[10px] font-mono bg-white/10 text-white/60 border border-white/5">Scroll</kbd>
+                            <span>Zoom</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
