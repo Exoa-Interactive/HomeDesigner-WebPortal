@@ -24,7 +24,7 @@ export default function ProjectPreviewModal({ project, onClose }) {
     const sceneRef = useRef({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [wireframe, setWireframe] = useState(false);
+    const [shadows, setShadows] = useState(false);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -37,16 +37,16 @@ export default function ProjectPreviewModal({ project, onClose }) {
             50,
             container.clientWidth / container.clientHeight,
             0.1,
-            1000
+            10000
         );
-        const initialPosition = new THREE.Vector3(0, 1.5, 3);
+        const initialPosition = new THREE.Vector3(0, 10, 30);
         const initialTarget = new THREE.Vector3(0, 1, 0);
         camera.position.copy(initialPosition);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.enabled = false;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -58,12 +58,12 @@ export default function ProjectPreviewModal({ project, onClose }) {
         controls.dampingFactor = 0.05;
         controls.screenSpacePanning = true;
         controls.minDistance = 0.5;
-        controls.maxDistance = 5;
+        controls.maxDistance = 50;
         controls.target.copy(initialTarget);
 
         const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
         keyLight.position.set(2, 3, 2);
-        keyLight.castShadow = true;
+        keyLight.castShadow = false;
         keyLight.shadow.mapSize.width = 2048;
         keyLight.shadow.mapSize.height = 2048;
         keyLight.shadow.bias = -0.0001;
@@ -81,13 +81,14 @@ export default function ProjectPreviewModal({ project, onClose }) {
         rimLight.position.set(-1, 2, -2);
         scene.add(rimLight);
 
-        const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+        const ambient = new THREE.AmbientLight(0xffffff, 1.2);
         scene.add(ambient);
 
         const shadowPlane = new THREE.Mesh(
-            new THREE.PlaneGeometry(10, 10),
-            new THREE.ShadowMaterial({ opacity: 0.3 })
+            new THREE.PlaneGeometry(100, 100),
+            new THREE.ShadowMaterial({ opacity: 0.12 })
         );
+        shadowPlane.position.y = -0.1;
         shadowPlane.rotation.x = -Math.PI / 2;
         shadowPlane.receiveShadow = true;
         scene.add(shadowPlane);
@@ -124,6 +125,8 @@ export default function ProjectPreviewModal({ project, onClose }) {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+                        const mats = Array.isArray(child.material) ? child.material : [child.material];
+                        mats.forEach(mat => { mat.shadowSide = THREE.DoubleSide; });
                     }
                 });
 
@@ -131,9 +134,9 @@ export default function ProjectPreviewModal({ project, onClose }) {
                 scene.add(model);
 
                 const maxDim = Math.max(size.x, size.y, size.z);
-                camera.position.set(0, size.y * 0.6, maxDim * 2);
-                controls.target.set(0, size.y * 0.4, 0);
-                controls.update();
+                sceneRef.current.initialPosition = new THREE.Vector3(0, size.y * 0.6, maxDim * 2);
+                sceneRef.current.initialTarget = new THREE.Vector3(0, size.y * 0.4, 0);
+                resetCamera();
 
                 if (gltf.animations.length > 0) {
                     mixer = new THREE.AnimationMixer(model);
@@ -161,6 +164,7 @@ export default function ProjectPreviewModal({ project, onClose }) {
         sceneRef.current = {
             camera, controls, model: () => model,
             initialPosition, initialTarget,
+            renderer, keyLight,
         };
 
         return () => {
@@ -183,26 +187,21 @@ export default function ProjectPreviewModal({ project, onClose }) {
     }, [project.glb_url]);
 
     function resetCamera() {
-        const { camera, controls, initialPosition, initialTarget, model } = sceneRef.current;
-        if (!camera) return;
+        const { camera, controls, initialPosition, initialTarget } = sceneRef.current;
+        if (!camera || !initialPosition) return;
         camera.position.copy(initialPosition);
         controls.target.copy(initialTarget);
         controls.update();
-        const m = model();
-        if (m) m.rotation.set(0, 0, 0);
     }
 
-    function toggleWireframe() {
-        const m = sceneRef.current.model?.();
-        if (!m) return;
-        const next = !wireframe;
-        setWireframe(next);
-        m.traverse((child) => {
-            if (child.isMesh && child.material) {
-                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach(mat => mat.wireframe = next);
-            }
-        });
+    function toggleShadows() {
+        const { renderer, keyLight } = sceneRef.current;
+        if (!renderer) return;
+        const next = !shadows;
+        setShadows(next);
+        keyLight.castShadow = next;
+        renderer.shadowMap.enabled = next;
+        renderer.shadowMap.needsUpdate = true;
     }
 
     return (
@@ -270,17 +269,18 @@ export default function ProjectPreviewModal({ project, onClose }) {
                             Reset
                         </button>
                         <button
-                            onClick={toggleWireframe}
+                            onClick={toggleShadows}
                             className={`flex items-center gap-2 text-xs font-medium px-3.5 py-2.5 rounded-xl backdrop-blur-md border transition-all ${
-                                wireframe
+                                shadows
                                     ? 'text-brand-300 bg-brand-500/20 border-brand-400/30'
                                     : 'text-white/70 hover:text-white bg-black/30 border-white/10 hover:bg-black/50'
                             }`}
                         >
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                                <circle cx="12" cy="12" r="4" />
+                                <path strokeLinecap="round" d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                             </svg>
-                            Wireframe
+                            Shadows
                         </button>
                     </div>
                 )}

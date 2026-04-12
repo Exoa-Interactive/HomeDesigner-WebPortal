@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectApiController extends Controller
@@ -23,6 +24,23 @@ class ProjectApiController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('[ProjectApi store] Incoming request', [
+            'content_type'   => $request->header('Content-Type'),
+            'content_length' => $request->header('Content-Length'),
+            'all_fields'     => $request->except(['glb_file', 'json_file', 'cover_image']),
+            'has_glb_file'   => $request->hasFile('glb_file'),
+            'has_json_file'  => $request->hasFile('json_file'),
+            'has_cover_image'=> $request->hasFile('cover_image'),
+            'files'          => collect($request->allFiles())->map(fn($f) => [
+                'original_name' => $f->getClientOriginalName(),
+                'mime'          => $f->getMimeType(),
+                'size_bytes'    => $f->getSize(),
+                'error'         => $f->getError(),
+            ])->toArray(),
+            'php_post_max_size'       => ini_get('post_max_size'),
+            'php_upload_max_filesize' => ini_get('upload_max_filesize'),
+        ]);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|in:template,userfile',
@@ -32,16 +50,22 @@ class ProjectApiController extends Controller
             'cover_image' => 'nullable|image|max:5120',
         ]);
 
+        Log::info('[ProjectApi store] Validation passed');
+
         $project = Project::create([
             'name' => $request->name,
             'type' => $request->type,
             'user_id' => $request->user_id,
         ]);
 
+        Log::info('[ProjectApi store] Project record created', ['project_id' => $project->id]);
+
         $data = $this->storeFiles($request, $project->id);
         if (!empty($data)) {
             $project->update($data);
         }
+
+        Log::info('[ProjectApi store] Done', ['project_id' => $project->id, 'stored_paths' => $data]);
 
         return response()->json($this->formatProject($project->fresh()), 201);
     }
@@ -111,18 +135,52 @@ class ProjectApiController extends Controller
         $dir = "projects/{$id}";
         $data = [];
 
+        Log::info('[ProjectApi storeFiles] Starting', [
+            'project_id'      => $id,
+            'storage_dir'     => $dir,
+            'has_glb_file'    => $request->hasFile('glb_file'),
+            'has_json_file'   => $request->hasFile('json_file'),
+            'has_cover_image' => $request->hasFile('cover_image'),
+        ]);
+
         if ($request->hasFile('glb_file')) {
-            $data['glb_url'] = $disk->putFileAs($dir, $request->file('glb_file'), "{$id}.glb");
+            $file = $request->file('glb_file');
+            Log::info('[ProjectApi storeFiles] Storing GLB', [
+                'original_name' => $file->getClientOriginalName(),
+                'mime'          => $file->getMimeType(),
+                'size_bytes'    => $file->getSize(),
+                'target'        => "{$dir}/{$id}.glb",
+            ]);
+            $path = $disk->putFileAs($dir, $file, "{$id}.glb");
+            Log::info('[ProjectApi storeFiles] GLB result', ['path' => $path]);
+            $data['glb_url'] = $path;
         }
 
         if ($request->hasFile('json_file')) {
-            $data['json_url'] = $disk->putFileAs($dir, $request->file('json_file'), "{$id}.json");
+            $file = $request->file('json_file');
+            Log::info('[ProjectApi storeFiles] Storing JSON', [
+                'original_name' => $file->getClientOriginalName(),
+                'size_bytes'    => $file->getSize(),
+            ]);
+            $path = $disk->putFileAs($dir, $file, "{$id}.json");
+            Log::info('[ProjectApi storeFiles] JSON result', ['path' => $path]);
+            $data['json_url'] = $path;
         }
 
         if ($request->hasFile('cover_image')) {
-            $ext = $request->file('cover_image')->getClientOriginalExtension();
-            $data['cover_image'] = $disk->putFileAs($dir, $request->file('cover_image'), "{$id}.{$ext}");
+            $file = $request->file('cover_image');
+            $ext  = $file->getClientOriginalExtension();
+            Log::info('[ProjectApi storeFiles] Storing cover image', [
+                'original_name' => $file->getClientOriginalName(),
+                'ext'           => $ext,
+                'size_bytes'    => $file->getSize(),
+            ]);
+            $path = $disk->putFileAs($dir, $file, "{$id}.{$ext}");
+            Log::info('[ProjectApi storeFiles] Cover image result', ['path' => $path]);
+            $data['cover_image'] = $path;
         }
+
+        Log::info('[ProjectApi storeFiles] Complete', ['data' => $data]);
 
         return $data;
     }
