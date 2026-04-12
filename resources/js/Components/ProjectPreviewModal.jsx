@@ -61,7 +61,7 @@ export default function ProjectPreviewModal({ project, onClose }) {
         controls.maxDistance = 50;
         controls.target.copy(initialTarget);
 
-        const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
         keyLight.position.set(2, 3, 2);
         keyLight.castShadow = false;
         keyLight.shadow.mapSize.width = 2048;
@@ -69,19 +69,19 @@ export default function ProjectPreviewModal({ project, onClose }) {
         keyLight.shadow.bias = -0.0001;
         scene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0x6794FF, 1.0);
+        const fillLight = new THREE.DirectionalLight(0x6794FF, 0.5);
         fillLight.position.set(-2, 2, -1);
         scene.add(fillLight);
 
-        const backLight = new THREE.DirectionalLight(0xFFB878, 1.5);
+        const backLight = new THREE.DirectionalLight(0xFFB878, 0.7);
         backLight.position.set(0, 2, -3);
         scene.add(backLight);
 
-        const rimLight = new THREE.DirectionalLight(0xffffff, 3.0);
+        const rimLight = new THREE.DirectionalLight(0xffffff, 1.2);
         rimLight.position.set(-1, 2, -2);
         scene.add(rimLight);
 
-        const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+        const ambient = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambient);
 
         const shadowPlane = new THREE.Mesh(

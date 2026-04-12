@@ -45,9 +45,9 @@ class ProjectApiController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|string|in:template,userfile',
             'user_id' => 'nullable|integer|exists:users,id',
-            'glb_file' => 'nullable|file|max:51200',
-            'json_file' => 'nullable|file|max:10240',
-            'cover_image' => 'nullable|image|max:5120',
+            'glb_file' => 'nullable|file|max:51200|mimetypes:model/gltf-binary,application/octet-stream',
+            'json_file' => 'nullable|file|max:10240|mimetypes:application/json,text/plain',
+            'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         Log::info('[ProjectApi store] Validation passed');
@@ -76,9 +76,9 @@ class ProjectApiController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'type' => 'sometimes|required|string|in:template,userfile',
             'user_id' => 'nullable|integer|exists:users,id',
-            'glb_file' => 'nullable|file|max:51200',
-            'json_file' => 'nullable|file|max:10240',
-            'cover_image' => 'nullable|image|max:5120',
+            'glb_file' => 'nullable|file|max:51200|mimetypes:model/gltf-binary,application/octet-stream',
+            'json_file' => 'nullable|file|max:10240|mimetypes:application/json,text/plain',
+            'cover_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
 
         $data = [];
