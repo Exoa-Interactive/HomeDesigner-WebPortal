@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HomeDesigner Portal — Documentation</title>
+  <style>
+    :root {
+      --brand: #7c3aed;
+      --brand-light: #a78bfa;
+      --brand-dark: #5b21b6;
+      --brand-bg: #f5f3ff;
+      --text: #1e1b4b;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --code-bg: #1e1b4b;
+      --code-text: #e5e7eb;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --sidebar-w: 260px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background: #fafafa;
+      line-height: 1.7;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: white;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .logo-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-light));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .logo-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+
+    .nav-section { margin-bottom: 8px; }
+
+    .nav-section-title {
+      padding: 6px 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .nav-link {
+      display: block;
+      padding: 7px 20px;
+      font-size: 13.5px;
+      color: #374151;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover { background: var(--brand-bg); color: var(--brand); border-left-color: var(--brand-light); }
+    .nav-link.active { background: var(--brand-bg); color: var(--brand); border-left-color: var(--brand); font-weight: 600; }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      max-width: 900px;
+      padding: 48px 56px 96px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 50%, var(--brand-light) 100%);
+      border-radius: 16px;
+      padding: 48px;
+      color: white;
+      margin-bottom: 56px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .hero p { font-size: 17px; opacity: 0.9; max-width: 560px; }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .tag {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 56px; scroll-margin-top: 24px; }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--brand-bg);
+      color: var(--text);
+    }
+
+    h2 .section-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--brand-bg);
+      border-radius: 8px;
+      margin-right: 10px;
+      font-size: 16px;
+      vertical-align: middle;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 24px 0 10px;
+      color: var(--brand-dark);
+    }
+
+    p { margin-bottom: 12px; color: #374151; }
+
+    /* ── STACK GRID ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .stack-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stack-card-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .stack-card-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stack-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stack-card.backend { border-top: 3px solid #3b82f6; }
+    .stack-card.frontend { border-top: 3px solid #8b5cf6; }
+    .stack-card.build { border-top: 3px solid #10b981; }
+    .stack-card.db { border-top: 3px solid #f59e0b; }
+
+    /* ── ARCHITECTURE DIAGRAM ── */
+    .arch-diagram {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .arch-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .arch-box {
+      background: var(--brand-bg);
+      border: 2px solid var(--brand-light);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--brand-dark);
+      text-align: center;
+    }
+
+    .arch-box.blue { background: #eff6ff; border-color: #93c5fd; color: #1e40af; }
+    .arch-box.green { background: #f0fdf4; border-color: #86efac; color: #166534; }
+    .arch-box.amber { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+    .arch-box.gray { background: #f9fafb; border-color: #d1d5db; color: #374151; }
+
+    .arch-arrow {
+      color: #9ca3af;
+      font-size: 18px;
+      padding: 0 6px;
+    }
+
+    /* ── CODE BLOCKS ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 10px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 14px 0;
+      position: relative;
+    }
+
+    code { font-family: "Fira Code", "Cascadia Code", "Consolas", monospace; }
+
+    .code-label {
+      display: inline-block;
+      background: var(--brand);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .kw { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .cm { color: #546e7a; font-style: italic; }
+    .fn { color: #82aaff; }
+    .num { color: #f78c6c; }
+    .val { color: #ffcb6b; }
+
+    /* ── STEP LIST ── */
+    .steps { counter-reset: steps; margin: 16px 0; }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: var(--brand);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .step-body { flex: 1; }
+    .step-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .step-desc { color: #374151; font-size: 14px; }
+
+    /* ── ROUTE TABLE ── */
+    .route-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13.5px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .route-table th {
+      background: #f9fafb;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .route-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+
+    .route-table tr:last-child td { border-bottom: none; }
+    .route-table tr:hover td { background: #fafafa; }
+
+    .method {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    .method.GET { background: #dcfce7; color: #166534; }
+    .method.POST { background: #dbeafe; color: #1e40af; }
+    .method.DELETE { background: #fee2e2; color: #991b1b; }
+
+    .lock-icon { font-size: 11px; color: var(--warning); }
+
+    .path { font-family: monospace; font-size: 12.5px; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-body { flex: 1; }
+    .callout-title { font-weight: 700; margin-bottom: 4px; }
+
+    .callout.info { background: #eff6ff; border-left: 4px solid #3b82f6; }
+    .callout.warning { background: #fffbeb; border-left: 4px solid #f59e0b; }
+    .callout.danger { background: #fef2f2; border-left: 4px solid #ef4444; }
+    .callout.success { background: #f0fdf4; border-left: 4px solid #22c55e; }
+
+    /* ── FILE TREE ── */
+    .file-tree {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.9;
+      margin: 16px 0;
+    }
+
+    .ft-dir { color: var(--brand); font-weight: 600; }
+    .ft-file { color: #374151; }
+    .ft-comment { color: var(--text-muted); font-style: italic; }
+
+    /* ── ENV TABLE ── */
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 14px 0;
+    }
+
+    .env-table th {
+      background: var(--brand-bg);
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--brand-dark);
+    }
+
+    .env-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+
+    .env-table tr:last-child td { border-bottom: none; }
+    .env-key { font-family: monospace; color: var(--brand-dark); font-weight: 600; }
+    .env-val { font-family: monospace; color: #059669; font-size: 12px; }
+    .env-desc { color: var(--text-muted); font-size: 12px; }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge.req { background: #fee2e2; color: #991b1b; }
+    .badge.opt { background: #f3f4f6; color: #6b7280; }
+    .badge.dep { background: #fef3c7; color: #92400e; }
+
+    /* ── DEPLOY TIMELINE ── */
+    .timeline { margin: 20px 0; }
+
+    .tl-item {
+      display: flex;
+      gap: 0;
+      position: relative;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: -8px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .tl-item:last-child::before { display: none; }
+
+    .tl-dot {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: white;
+      border: 2px solid var(--brand);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--brand);
+      font-size: 14px;
+      margin-right: 16px;
+      z-index: 1;
+    }
+
+    .tl-content {
+      flex: 1;
+      padding-bottom: 28px;
+    }
+
+    .tl-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 24px 20px 48px; }
+      .hero { padding: 28px; }
+      .hero h1 { font-size: 26px; }
+      .stack-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <a href="#top" class="logo-mark">
+      <div class="logo-icon">&#127968;</div>
+      <div class="logo-text">
+        HomeDesigner
+        <div class="logo-sub">Documentation</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Getting Started</div>
+      <a href="#overview" class="nav-link">Overview</a>
+      <a href="#stack" class="nav-link">Tech Stack</a>
+      <a href="#architecture" class="nav-link">Architecture</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Project Structure</div>
+      <a href="#structure" class="nav-link">File Structure</a>
+      <a href="#routing" class="nav-link">Routing</a>
+      <a href="#database" class="nav-link">Database</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Features</div>
+      <a href="#auth" class="nav-link">Authentication</a>
+      <a href="#projects" class="nav-link">Project Management</a>
+      <a href="#3d-viewer" class="nav-link">3D Viewer</a>
+      <a href="#api" class="nav-link">REST API</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Deployment</div>
+      <a href="#requirements" class="nav-link">Server Requirements</a>
+      <a href="#local-dev" class="nav-link">Local Development</a>
+      <a href="#production" class="nav-link">Production Deployment</a>
+      <a href="#nginx" class="nav-link">Nginx Configuration</a>
+      <a href="#apache" class="nav-link">Apache Configuration</a>
+      <a href="#env-config" class="nav-link">Environment Config</a>
+      <a href="#troubleshooting" class="nav-link">Troubleshooting</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="main" id="top">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">v1.0 &mdash; Documentation</div>
+    <h1>HomeDesigner Web Portal</h1>
+    <p>A full-stack web portal for managing and previewing 3D home design projects — built on Laravel 12, React 18, and Inertia.js.</p>
+    <div class="hero-tags">
+      <span class="tag">Laravel 12</span>
+      <span class="tag">React 18</span>
+      <span class="tag">Inertia.js</span>
+      <span class="tag">Three.js</span>
+      <span class="tag">Tailwind CSS</span>
+      <span class="tag">Vite 7</span>
+      <span class="tag">SQLite / MySQL</span>
+    </div>
+  </div>
+
+  <!-- ─── OVERVIEW ─── -->
+  <section class="section" id="overview">
+    <h2><span class="section-icon">&#128269;</span>Overview</h2>
+
+    <p>
+      The <strong>HomeDesigner Web Portal</strong> is a project library application that lets users browse,
+      upload, and interactively preview 3D home design models. It serves two audiences:
+    </p>
+
+    <ul style="margin: 12px 0 12px 20px; color:#374151;">
+      <li style="margin-bottom:6px"><strong>End users</strong> — browse the public gallery of 3D design projects, filter by type, and preview models in an interactive 3D viewer.</li>
+      <li style="margin-bottom:6px"><strong>Administrators</strong> — log in to create, edit, and delete projects, uploading GLB 3D model files, JSON metadata, and cover images.</li>
+      <li style="margin-bottom:6px"><strong>External clients / apps</strong> — integrate via the REST API to programmatically list, create, or update projects using bearer-token authentication.</li>
+    </ul>
+
+    <div class="callout info">
+      <div class="callout-icon">&#8505;&#65039;</div>
+      <div class="callout-body">
+        <div class="callout-title">Hybrid Architecture</div>
+        The portal uses <strong>Inertia.js</strong> so the web interface is a true SPA — no page reloads — while the backend is a conventional Laravel app that renders React components server-side. It also exposes a separate <strong>REST API</strong> at <code>/api/*</code> for external integrations.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TECH STACK ─── -->
+  <section class="section" id="stack">
+    <h2><span class="section-icon">&#9889;</span>Tech Stack</h2>
+
+    <div class="stack-grid">
+      <div class="stack-card backend">
+        <div class="stack-card-label">Backend</div>
+        <div class="stack-card-name">Laravel 12</div>
+        <div class="stack-card-desc">PHP web framework, routing, ORM</div>
+      </div>
+      <div class="stack-card backend">
+        <div class="stack-card-label">Authentication</div>
+        <div class="stack-card-name">Laravel Sanctum</div>
+        <div class="stack-card-desc">Session + API token auth</div>
+      </div>
+      <div class="stack-card backend">
+        <div class="stack-card-label">SPA Bridge</div>
+        <div class="stack-card-name">Inertia.js</div>
+        <div class="stack-card-desc">Server-driven React pages</div>
+      </div>
+      <div class="stack-card frontend">
+        <div class="stack-card-label">Frontend</div>
+        <div class="stack-card-name">React 18</div>
+        <div class="stack-card-desc">UI components and state</div>
+      </div>
+      <div class="stack-card frontend">
+        <div class="stack-card-label">3D Rendering</div>
+        <div class="stack-card-name">Three.js</div>
+        <div class="stack-card-desc">GLB model viewer, lights, camera</div>
+      </div>
+      <div class="stack-card frontend">
+        <div class="stack-card-label">Styling</div>
+        <div class="stack-card-name">Tailwind CSS 3</div>
+        <div class="stack-card-desc">Utility-first CSS, custom purple palette</div>
+      </div>
+      <div class="stack-card build">
+        <div class="stack-card-label">Build Tool</div>
+        <div class="stack-card-name">Vite 7</div>
+        <div class="stack-card-desc">HMR dev server, production bundle</div>
+      </div>
+      <div class="stack-card build">
+        <div class="stack-card-label">HTTP Client</div>
+        <div class="stack-card-name">Axios</div>
+        <div class="stack-card-desc">API calls from the frontend</div>
+      </div>
+      <div class="stack-card db">
+        <div class="stack-card-label">Database</div>
+        <div class="stack-card-name">SQLite / MySQL</div>
+        <div class="stack-card-desc">SQLite by default, MySQL in prod</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ARCHITECTURE ─── -->
+  <section class="section" id="architecture">
+    <h2><span class="section-icon">&#127963;</span>Architecture</h2>
+
+    <p>Requests flow through three distinct layers depending on the client type:</p>
+
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box blue">Browser (React SPA)</div>
+        <div class="arch-arrow">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        <div class="arch-box blue">Mobile / API Client</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-arrow">&#8595;</div>
+        <div style="width:120px"></div>
+        <div class="arch-arrow">&#8595;</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box">Inertia.js + Web Routes</div>
+        <div style="width:30px"></div>
+        <div class="arch-box">REST API Routes (/api/*)</div>
+      </div>
+      <div class="arch-row">
+        <div style="flex:1; text-align:center; font-size:22px; color:#9ca3af;">&#8595;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8595;</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box" style="min-width:300px">Laravel Controllers + Eloquent ORM</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-arrow">&#8595;</div>
+        <div style="width:80px"></div>
+        <div class="arch-arrow">&#8595;</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box amber">SQLite / MySQL Database</div>
+        <div style="width:40px"></div>
+        <div class="arch-box green">storage/app/public (Files)</div>
+      </div>
+    </div>
+
+    <h3>Request Lifecycle (Web)</h3>
+    <ol style="margin-left:20px; color:#374151; font-size:14px; line-height:2;">
+      <li>Browser navigates to a URL.</li>
+      <li>Laravel handles the request via <code>routes/web.php</code>.</li>
+      <li>Controller fetches data from the database using Eloquent.</li>
+      <li>Inertia renders the matching React page component, injecting data as props.</li>
+      <li>On subsequent navigation, Inertia intercepts links and fetches only the new page's JSON (no full reload).</li>
+    </ol>
+
+    <h3>Request Lifecycle (API)</h3>
+    <ol style="margin-left:20px; color:#374151; font-size:14px; line-height:2;">
+      <li>Client sends request to <code>/api/*</code> with optional <code>Authorization: Bearer &lt;token&gt;</code> header.</li>
+      <li>Laravel Sanctum validates the token (if protected route).</li>
+      <li>API Controller processes the request and returns JSON.</li>
+    </ol>
+  </section>
+
+  <!-- ─── FILE STRUCTURE ─── -->
+  <section class="section" id="structure">
+    <h2><span class="section-icon">&#128193;</span>File Structure</h2>
+
+    <div class="file-tree"><code>
+<span class="ft-dir">HomeDesignerWebPortal/</span><br>
+├── <span class="ft-dir">app/</span><br>
+│   ├── <span class="ft-dir">Http/Controllers/</span><br>
+│   │   ├── <span class="ft-dir">Api/</span><br>
+│   │   │   ├── <span class="ft-file">AuthController.php</span>       <span class="ft-comment">— API login/logout/user</span><br>
+│   │   │   └── <span class="ft-file">ProjectApiController.php</span>  <span class="ft-comment">— JSON project CRUD</span><br>
+│   │   ├── <span class="ft-dir">Auth/</span>                          <span class="ft-comment">— Breeze auth controllers</span><br>
+│   │   ├── <span class="ft-file">ProjectController.php</span>         <span class="ft-comment">— Web (Inertia) project CRUD</span><br>
+│   │   └── <span class="ft-file">ProfileController.php</span><br>
+│   └── <span class="ft-dir">Models/</span><br>
+│       ├── <span class="ft-file">User.php</span>                      <span class="ft-comment">— hasMany(projects)</span><br>
+│       └── <span class="ft-file">Project.php</span>                   <span class="ft-comment">— belongsTo(user)</span><br>
+│<br>
+├── <span class="ft-dir">resources/js/</span><br>
+│   ├── <span class="ft-file">app.jsx</span>                           <span class="ft-comment">— Frontend entry point</span><br>
+│   ├── <span class="ft-dir">Pages/</span><br>
+│   │   ├── <span class="ft-file">Home.jsx</span>                      <span class="ft-comment">— Public project gallery</span><br>
+│   │   ├── <span class="ft-file">Admin.jsx</span>                     <span class="ft-comment">— Admin dashboard</span><br>
+│   │   └── <span class="ft-dir">Auth/</span>                          <span class="ft-comment">— Login, Register, etc.</span><br>
+│   ├── <span class="ft-dir">Components/</span><br>
+│   │   ├── <span class="ft-file">ProjectPreviewModal.jsx</span>       <span class="ft-comment">— Three.js 3D viewer</span><br>
+│   │   └── <span class="ft-file">…</span>                             <span class="ft-comment">— Buttons, inputs, modal</span><br>
+│   └── <span class="ft-dir">Layouts/</span><br>
+│       └── <span class="ft-file">AppLayout.jsx</span>                 <span class="ft-comment">— Header + footer shell</span><br>
+│<br>
+├── <span class="ft-dir">routes/</span><br>
+│   ├── <span class="ft-file">web.php</span>                           <span class="ft-comment">— Inertia page routes</span><br>
+│   ├── <span class="ft-file">api.php</span>                           <span class="ft-comment">— REST API routes</span><br>
+│   └── <span class="ft-file">auth.php</span>                          <span class="ft-comment">— Login/register routes</span><br>
+│<br>
+├── <span class="ft-dir">database/migrations/</span>                   <span class="ft-comment">— DB schema files</span><br>
+├── <span class="ft-dir">public/</span>                               <span class="ft-comment">— Web server document root</span><br>
+│   ├── <span class="ft-file">index.php</span>                         <span class="ft-comment">— Laravel front controller</span><br>
+│   └── <span class="ft-dir">build/</span>                             <span class="ft-comment">— Vite compiled assets</span><br>
+│<br>
+├── <span class="ft-dir">storage/app/public/</span>                   <span class="ft-comment">— Uploaded project files</span><br>
+├── <span class="ft-file">vite.config.js</span><br>
+├── <span class="ft-file">tailwind.config.js</span><br>
+├── <span class="ft-file">composer.json</span><br>
+├── <span class="ft-file">package.json</span><br>
+└── <span class="ft-file">.env</span>                                  <span class="ft-comment">— Environment configuration</span>
+    </code></div>
+  </section>
+
+  <!-- ─── ROUTING ─── -->
+  <section class="section" id="routing">
+    <h2><span class="section-icon">&#128204;</span>Routing</h2>
+
+    <h3>Web Routes (Inertia / Browser)</h3>
+    <table class="route-table">
+      <thead>
+        <tr><th>Method</th><th>Path</th><th>Page / Action</th><th>Auth</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/</td>
+          <td>Public project gallery (Home.jsx)</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/admin</td>
+          <td>Admin project management (Admin.jsx)</td>
+          <td><span class="lock-icon">&#128274;</span> session</td>
+        </tr>
+        <tr>
+          <td><span class="method POST">POST</span></td>
+          <td class="path">/admin/projects</td>
+          <td>Create a project with file uploads</td>
+          <td><span class="lock-icon">&#128274;</span> session</td>
+        </tr>
+        <tr>
+          <td><span class="method POST">POST</span></td>
+          <td class="path">/admin/projects/{id}</td>
+          <td>Update a project (POST used for multipart)</td>
+          <td><span class="lock-icon">&#128274;</span> session</td>
+        </tr>
+        <tr>
+          <td><span class="method DELETE">DELETE</span></td>
+          <td class="path">/admin/projects/{id}</td>
+          <td>Delete a project and its files</td>
+          <td><span class="lock-icon">&#128274;</span> session</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/login</td>
+          <td>Login form</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/register</td>
+          <td>Registration form</td>
+          <td>&mdash;</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>REST API Routes (/api/*)</h3>
+    <table class="route-table">
+      <thead>
+        <tr><th>Method</th><th>Path</th><th>Description</th><th>Auth</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="method POST">POST</span></td>
+          <td class="path">/api/login</td>
+          <td>Returns a bearer token</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method POST">POST</span></td>
+          <td class="path">/api/logout</td>
+          <td>Revokes current token</td>
+          <td><span class="lock-icon">&#128274;</span> token</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/api/user</td>
+          <td>Current authenticated user</td>
+          <td><span class="lock-icon">&#128274;</span> token</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/api/projects</td>
+          <td>List all projects (public)</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/api/projects/{id}</td>
+          <td>Get a single project</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method POST">POST</span></td>
+          <td class="path">/api/projects</td>
+          <td>Create a project</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method POST">POST</span></td>
+          <td class="path">/api/projects/{id}</td>
+          <td>Update a project (multipart)</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method DELETE">DELETE</span></td>
+          <td class="path">/api/projects/{id}</td>
+          <td>Delete a project</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><span class="method GET">GET</span></td>
+          <td class="path">/api/my-projects</td>
+          <td>Current user's projects only</td>
+          <td><span class="lock-icon">&#128274;</span> token</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ─── DATABASE ─── -->
+  <section class="section" id="database">
+    <h2><span class="section-icon">&#128200;</span>Database</h2>
+
+    <p>Two core tables power the application:</p>
+
+    <h3>users</h3>
+    <table class="route-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>integer</td><td>Primary key</td></tr>
+        <tr><td>name</td><td>string</td><td>&nbsp;</td></tr>
+        <tr><td>email</td><td>string</td><td>Unique</td></tr>
+        <tr><td>password</td><td>string</td><td>Bcrypt hashed</td></tr>
+        <tr><td>email_verified_at</td><td>timestamp</td><td>Nullable</td></tr>
+        <tr><td>created_at / updated_at</td><td>timestamp</td><td>Auto-managed</td></tr>
+      </tbody>
+    </table>
+
+    <h3>projects</h3>
+    <table class="route-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>id</td><td>integer</td><td>Primary key</td></tr>
+        <tr><td>name</td><td>string</td><td>Project display name</td></tr>
+        <tr><td>user_id</td><td>integer</td><td>FK → users.id, nullable, cascades on delete</td></tr>
+        <tr><td>type</td><td>string</td><td><code>template</code> or <code>userfile</code> (default: template)</td></tr>
+        <tr><td>glb_url</td><td>string</td><td>Relative path to .glb 3D model file</td></tr>
+        <tr><td>json_url</td><td>string</td><td>Relative path to .json metadata file</td></tr>
+        <tr><td>cover_image</td><td>string</td><td>Relative path to cover image</td></tr>
+        <tr><td>created_at / updated_at</td><td>timestamp</td><td>Auto-managed</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:14px;">
+      Files are stored on disk under <code>storage/app/public/projects/{id}/</code>
+      and served via the public symlink at <code>/storage/projects/{id}/filename</code>.
+    </p>
+  </section>
+
+  <!-- ─── AUTHENTICATION ─── -->
+  <section class="section" id="auth">
+    <h2><span class="section-icon">&#128274;</span>Authentication</h2>
+
+    <h3>Web (Session-based)</h3>
+    <p>
+      The admin interface uses Laravel's standard session authentication. A user logs in via the
+      <code>/login</code> form, and Laravel sets a signed session cookie. All admin routes are
+      protected with the <code>auth</code> middleware.
+    </p>
+
+    <h3>API (Token-based — Laravel Sanctum)</h3>
+    <p>External clients authenticate with bearer tokens:</p>
+
+    <div class="code-label">1. Obtain a token</div>
+    <pre><code><span class="kw">POST</span> /api/login
+Content-Type: application/json
+
+{
+  <span class="str">"email"</span>: <span class="str">"admin@example.com"</span>,
+  <span class="str">"password"</span>: <span class="str">"your-password"</span>
+}
+
+<span class="cm">// Response</span>
+{
+  <span class="str">"token"</span>: <span class="str">"1|abc123..."</span>,
+  <span class="str">"user"</span>: { <span class="str">"id"</span>: 1, <span class="str">"name"</span>: <span class="str">"Admin"</span>, ... }
+}</code></pre>
+
+    <div class="code-label">2. Use the token in subsequent requests</div>
+    <pre><code><span class="kw">GET</span> /api/my-projects
+Authorization: Bearer 1|abc123...
+Accept: application/json</code></pre>
+
+    <div class="callout warning">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <div class="callout-title">Security Note</div>
+        The public API project endpoints (list, create, update, delete) do <strong>not</strong> require authentication by default. Restrict these routes if the portal should be access-controlled in production.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROJECT MANAGEMENT ─── -->
+  <section class="section" id="projects">
+    <h2><span class="section-icon">&#128195;</span>Project Management</h2>
+
+    <p>Each project can have up to three files attached:</p>
+
+    <table class="route-table">
+      <thead><tr><th>File</th><th>Field</th><th>Max Size</th><th>Format</th></tr></thead>
+      <tbody>
+        <tr><td><strong>3D Model</strong></td><td>glb_file</td><td>50 MB</td><td>.glb (binary glTF)</td></tr>
+        <tr><td><strong>Metadata</strong></td><td>json_file</td><td>10 MB</td><td>.json</td></tr>
+        <tr><td><strong>Cover Image</strong></td><td>cover_image</td><td>5 MB</td><td>jpg, png, gif, webp</td></tr>
+      </tbody>
+    </table>
+
+    <p>Files are stored at <code>storage/app/public/projects/{id}/{id}.{ext}</code> and
+    URLs are returned as <code>/storage/projects/{id}/{filename}</code>.</p>
+
+    <h3>Project Types</h3>
+    <ul style="margin:10px 0 0 20px; color:#374151;">
+      <li><strong>template</strong> — shared design templates available to all users.</li>
+      <li><strong>userfile</strong> — projects belonging to a specific user account.</li>
+    </ul>
+  </section>
+
+  <!-- ─── 3D VIEWER ─── -->
+  <section class="section" id="3d-viewer">
+    <h2><span class="section-icon">&#127891;</span>3D Viewer</h2>
+
+    <p>
+      The <code>ProjectPreviewModal</code> component renders GLB files directly in the browser
+      using <strong>Three.js</strong>. It is opened when a user clicks the "3D Preview" button
+      on any project that has a GLB file.
+    </p>
+
+    <h3>Features</h3>
+    <ul style="margin:10px 0 0 20px; color:#374151; line-height:2;">
+      <li>Loads GLB models via <code>GLTFLoader</code></li>
+      <li><strong>Orbit controls</strong> — click + drag to rotate, scroll to zoom, right-click to pan</li>
+      <li>Professional 4-light setup (directional lights + ambient) for realistic shading</li>
+      <li>Plays embedded model animations via <code>AnimationMixer</code></li>
+      <li>Shadow toggle button</li>
+      <li>Reset camera button</li>
+      <li>Loading spinner and error state handling</li>
+    </ul>
+
+    <div class="callout info">
+      <div class="callout-icon">&#8505;&#65039;</div>
+      <div class="callout-body">
+        Three.js is a <strong>production</strong> dependency (<code>package.json &gt; dependencies</code>), not a dev dependency. It must be included in the production bundle — <code>npm run build</code> handles this automatically.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── API ─── -->
+  <section class="section" id="api">
+    <h2><span class="section-icon">&#128257;</span>REST API</h2>
+
+    <p>Full API reference is available in <code>API_DOCUMENTATION.md</code> at the project root. Key examples:</p>
+
+    <div class="code-label">List all projects</div>
+    <pre><code><span class="fn">curl</span> https://yourdomain.com/api/projects</code></pre>
+
+    <div class="code-label">Create a project with files</div>
+    <pre><code><span class="fn">curl</span> -X POST https://yourdomain.com/api/projects \
+  -F <span class="str">"name=Beach House"</span> \
+  -F <span class="str">"type=template"</span> \
+  -F <span class="str">"glb_file=@/path/to/model.glb"</span> \
+  -F <span class="str">"cover_image=@/path/to/cover.jpg"</span></code></pre>
+
+    <div class="code-label">Response format</div>
+    <pre><code>{
+  <span class="str">"id"</span>: <span class="num">1</span>,
+  <span class="str">"name"</span>: <span class="str">"Beach House"</span>,
+  <span class="str">"type"</span>: <span class="str">"template"</span>,
+  <span class="str">"glb_url"</span>: <span class="str">"/storage/projects/1/1.glb"</span>,
+  <span class="str">"json_url"</span>: <span class="val">null</span>,
+  <span class="str">"cover_image"</span>: <span class="str">"/storage/projects/1/1.jpg"</span>,
+  <span class="str">"user_id"</span>: <span class="val">null</span>,
+  <span class="str">"created_at"</span>: <span class="str">"2025-01-01T00:00:00Z"</span>
+}</code></pre>
+  </section>
+
+  <!-- ─── SERVER REQUIREMENTS ─── -->
+  <section class="section" id="requirements">
+    <h2><span class="section-icon">&#128421;</span>Server Requirements</h2>
+
+    <table class="route-table">
+      <thead><tr><th>Requirement</th><th>Minimum Version</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PHP</strong></td><td>8.2+</td><td>Required by Laravel 12</td></tr>
+        <tr><td><strong>PHP Extensions</strong></td><td>&mdash;</td><td>BCMath, Ctype, cURL, DOM, Fileinfo, JSON, Mbstring, OpenSSL, PCRE, PDO, Tokenizer, XML</td></tr>
+        <tr><td><strong>Composer</strong></td><td>2.x</td><td>PHP dependency manager</td></tr>
+        <tr><td><strong>Node.js</strong></td><td>18+ (LTS)</td><td>Required to build frontend assets</td></tr>
+        <tr><td><strong>npm</strong></td><td>9+</td><td>Comes with Node.js</td></tr>
+        <tr><td><strong>Database</strong></td><td>SQLite 3 or MySQL 8 / MariaDB 10.4</td><td>SQLite needs no server setup</td></tr>
+        <tr><td><strong>Web Server</strong></td><td>Nginx 1.18+ or Apache 2.4+</td><td>Must point to the <code>public/</code> directory</td></tr>
+        <tr><td><strong>Storage</strong></td><td>&mdash;</td><td><code>storage/</code> and <code>bootstrap/cache/</code> must be writable by the web server user</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ─── LOCAL DEV ─── -->
+  <section class="section" id="local-dev">
+    <h2><span class="section-icon">&#128187;</span>Local Development Setup</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Clone the repository</div>
+          <pre><code>git clone https://github.com/your-org/HomeDesignerWebPortal.git
+cd HomeDesignerWebPortal</code></pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Install PHP dependencies</div>
+          <pre><code>composer install</code></pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Install JavaScript dependencies</div>
+          <pre><code>npm install</code></pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Configure environment</div>
+          <pre><code>cp .env.example .env
+php artisan key:generate</code></pre>
+          <div class="step-desc">Edit <code>.env</code> to set your database connection and app URL (see <a href="#env-config">Environment Config</a>).</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Run database migrations</div>
+          <pre><code>php artisan migrate</code></pre>
+          <div class="step-desc">Creates all tables. For SQLite, the database file <code>database/database.sqlite</code> will be auto-created.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Create the storage symlink</div>
+          <pre><code>php artisan storage:link</code></pre>
+          <div class="step-desc">Creates <code>public/storage</code> → <code>storage/app/public</code> so uploaded files are web-accessible.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <div class="step-title">Create the first admin user</div>
+          <pre><code>php artisan tinker
+
+User::create([
+    'name' => 'Admin',
+    'email' => 'admin@example.com',
+    'password' => bcrypt('your-password'),
+]);</code></pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <div class="step-title">Start all development servers</div>
+          <pre><code>composer run dev</code></pre>
+          <div class="step-desc">
+            This single command runs concurrently:<br>
+            &bull; <code>php artisan serve</code> — Laravel at <code>http://localhost:8127</code><br>
+            &bull; <code>npm run dev</code> — Vite HMR at <code>http://localhost:5127</code><br>
+            &bull; <code>php artisan queue:listen</code><br>
+            &bull; <code>php artisan pail</code> — real-time log viewer
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRODUCTION ─── -->
+  <section class="section" id="production">
+    <h2><span class="section-icon">&#128640;</span>Production Deployment</h2>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot">1</div>
+        <div class="tl-content">
+          <div class="tl-title">Upload files to your server</div>
+          <p style="font-size:14px;">Clone or copy the project to your server. Common location: <code>/var/www/homedesigner</code></p>
+          <pre><code>git clone https://github.com/your-org/HomeDesignerWebPortal.git /var/www/homedesigner
+cd /var/www/homedesigner</code></pre>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">2</div>
+        <div class="tl-content">
+          <div class="tl-title">Install dependencies</div>
+          <pre><code><span class="cm"># PHP dependencies (no dev packages)</span>
+composer install --no-dev --optimize-autoloader
+
+<span class="cm"># Node dependencies (needed only to build)</span>
+npm ci</code></pre>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">3</div>
+        <div class="tl-content">
+          <div class="tl-title">Build frontend assets</div>
+          <pre><code>npm run build</code></pre>
+          <div style="font-size:14px;margin-top:8px;">This compiles React + Tailwind into <code>public/build/</code>. Node.js is <strong>only needed at build time</strong> — the production server does not need Node running.</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">4</div>
+        <div class="tl-content">
+          <div class="tl-title">Configure environment</div>
+          <pre><code>cp .env.example .env
+nano .env   <span class="cm"># set APP_URL, DB_*, etc.</span>
+php artisan key:generate</code></pre>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">5</div>
+        <div class="tl-content">
+          <div class="tl-title">Run migrations and link storage</div>
+          <pre><code>php artisan migrate --force
+php artisan storage:link</code></pre>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">6</div>
+        <div class="tl-content">
+          <div class="tl-title">Set file permissions</div>
+          <pre><code><span class="cm"># Replace www-data with your web server user (e.g. nginx, apache)</span>
+chown -R www-data:www-data /var/www/homedesigner
+chmod -R 755 /var/www/homedesigner
+chmod -R 775 storage bootstrap/cache</code></pre>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">7</div>
+        <div class="tl-content">
+          <div class="tl-title">Optimize Laravel for production</div>
+          <pre><code>php artisan config:cache
+php artisan route:cache
+php artisan view:cache</code></pre>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot">8</div>
+        <div class="tl-content">
+          <div class="tl-title">Configure your web server</div>
+          <div style="font-size:14px;margin-bottom:8px;">Point the server's document root to <code>/var/www/homedesigner/public</code>. See Nginx or Apache sections below.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── NGINX ─── -->
+  <section class="section" id="nginx">
+    <h2><span class="section-icon">&#9881;&#65039;</span>Nginx Configuration</h2>
+
+    <div class="code-label">/etc/nginx/sites-available/homedesigner</div>
+    <pre><code><span class="kw">server</span> {
+    listen 80;
+    listen [::]:80;
+    server_name yourdomain.com www.yourdomain.com;
+
+    <span class="cm"># Redirect all HTTP to HTTPS</span>
+    return 301 https://$host$request_uri;
+}
+
+<span class="kw">server</span> {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name yourdomain.com www.yourdomain.com;
+
+    root /var/www/homedesigner/public;
+    index index.php;
+
+    <span class="cm"># SSL (use Certbot / Let's Encrypt)</span>
+    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
+
+    <span class="cm"># Increase upload limits for GLB files (50 MB)</span>
+    client_max_body_size 55M;
+
+    <span class="cm"># All requests go to index.php (Laravel front controller)</span>
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    <span class="cm"># PHP-FPM handler</span>
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    <span class="cm"># Block access to hidden files (.env, .git, etc.)</span>
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+
+    <span class="cm"># Cache static assets</span>
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|glb)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}</code></pre>
+
+    <pre><code><span class="cm"># Enable and reload</span>
+ln -s /etc/nginx/sites-available/homedesigner /etc/nginx/sites-enabled/
+nginx -t &amp;&amp; systemctl reload nginx</code></pre>
+
+    <div class="callout success">
+      <div class="callout-icon">&#128273;</div>
+      <div class="callout-body">
+        <div class="callout-title">Free SSL with Certbot</div>
+        <code>apt install certbot python3-certbot-nginx &amp;&amp; certbot --nginx -d yourdomain.com</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── APACHE ─── -->
+  <section class="section" id="apache">
+    <h2><span class="section-icon">&#9881;&#65039;</span>Apache Configuration</h2>
+
+    <div class="code-label">/etc/apache2/sites-available/homedesigner.conf</div>
+    <pre><code><span class="kw">&lt;VirtualHost *:80&gt;</span>
+    ServerName yourdomain.com
+    ServerAlias www.yourdomain.com
+
+    DocumentRoot /var/www/homedesigner/public
+
+    <span class="cm"># Increase file upload size for GLB models</span>
+    php_value upload_max_filesize 55M
+    php_value post_max_size 60M
+
+    <span class="kw">&lt;Directory /var/www/homedesigner/public&gt;</span>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    <span class="kw">&lt;/Directory&gt;</span>
+
+    <span class="cm"># Block access to .env files</span>
+    <span class="kw">&lt;FilesMatch "^\.env"&gt;</span>
+        Require all denied
+    <span class="kw">&lt;/FilesMatch&gt;</span>
+
+    ErrorLog ${APACHE_LOG_DIR}/homedesigner_error.log
+    CustomLog ${APACHE_LOG_DIR}/homedesigner_access.log combined
+<span class="kw">&lt;/VirtualHost&gt;</span></code></pre>
+
+    <pre><code><span class="cm"># Enable required modules and site</span>
+a2enmod rewrite
+a2ensite homedesigner
+systemctl reload apache2</code></pre>
+
+    <div class="callout info">
+      <div class="callout-icon">&#8505;&#65039;</div>
+      <div class="callout-body">
+        <div class="callout-title">mod_rewrite required</div>
+        The <code>public/.htaccess</code> file included with Laravel handles URL rewriting. Make sure <code>mod_rewrite</code> is enabled and <code>AllowOverride All</code> is set.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ENV CONFIG ─── -->
+  <section class="section" id="env-config">
+    <h2><span class="section-icon">&#128196;</span>Environment Configuration</h2>
+
+    <p>Edit <code>.env</code> in the project root. Key variables:</p>
+
+    <table class="env-table">
+      <thead><tr><th>Variable</th><th>Example Value</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="env-key">APP_NAME</td>
+          <td class="env-val">"Project Library"</td>
+          <td class="env-desc">Displayed in the browser title and UI</td>
+        </tr>
+        <tr>
+          <td class="env-key">APP_ENV</td>
+          <td class="env-val">production</td>
+          <td class="env-desc">Use <code>production</code> on live servers</td>
+        </tr>
+        <tr>
+          <td class="env-key">APP_DEBUG</td>
+          <td class="env-val">false</td>
+          <td class="env-desc"><strong>Must be false in production</strong> — never expose stack traces</td>
+        </tr>
+        <tr>
+          <td class="env-key">APP_URL</td>
+          <td class="env-val">https://yourdomain.com</td>
+          <td class="env-desc">Full URL of the application (used for asset URLs, storage links)</td>
+        </tr>
+        <tr>
+          <td class="env-key">DB_CONNECTION</td>
+          <td class="env-val">mysql</td>
+          <td class="env-desc"><code>sqlite</code> or <code>mysql</code></td>
+        </tr>
+        <tr>
+          <td class="env-key">DB_HOST</td>
+          <td class="env-val">127.0.0.1</td>
+          <td class="env-desc">Database host (MySQL only)</td>
+        </tr>
+        <tr>
+          <td class="env-key">DB_DATABASE</td>
+          <td class="env-val">homedesigner</td>
+          <td class="env-desc">Database name (MySQL) or absolute path (SQLite)</td>
+        </tr>
+        <tr>
+          <td class="env-key">DB_USERNAME</td>
+          <td class="env-val">homedesigner_user</td>
+          <td class="env-desc">MySQL username</td>
+        </tr>
+        <tr>
+          <td class="env-key">DB_PASSWORD</td>
+          <td class="env-val">strong-password</td>
+          <td class="env-desc">MySQL password</td>
+        </tr>
+        <tr>
+          <td class="env-key">SESSION_DRIVER</td>
+          <td class="env-val">database</td>
+          <td class="env-desc">Session storage backend</td>
+        </tr>
+        <tr>
+          <td class="env-key">MAIL_MAILER</td>
+          <td class="env-val">smtp</td>
+          <td class="env-desc">Email driver for password reset emails</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout danger">
+      <div class="callout-icon">&#128721;</div>
+      <div class="callout-body">
+        <div class="callout-title">Never commit .env to version control</div>
+        The <code>.env</code> file contains your <code>APP_KEY</code> and database credentials. It is already listed in <code>.gitignore</code> — keep it that way.
+      </div>
+    </div>
+
+    <h3>Switching to MySQL</h3>
+    <pre><code>DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=homedesigner
+DB_USERNAME=homedesigner_user
+DB_PASSWORD=your_secure_password</code></pre>
+
+    <pre><code><span class="cm"># Create the database in MySQL</span>
+mysql -u root -p -e "CREATE DATABASE homedesigner CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p -e "CREATE USER 'homedesigner_user'@'localhost' IDENTIFIED BY 'your_secure_password';"
+mysql -u root -p -e "GRANT ALL PRIVILEGES ON homedesigner.* TO 'homedesigner_user'@'localhost';"
+
+<span class="cm"># Then migrate</span>
+php artisan migrate --force</code></pre>
+  </section>
+
+  <!-- ─── TROUBLESHOOTING ─── -->
+  <section class="section" id="troubleshooting">
+    <h2><span class="section-icon">&#128295;</span>Troubleshooting</h2>
+
+    <h3>500 Internal Server Error</h3>
+    <pre><code><span class="cm"># Check the Laravel log</span>
+tail -f storage/logs/laravel.log
+
+<span class="cm"># Make sure storage is writable</span>
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache</code></pre>
+
+    <h3>Assets not loading (404 on /build/*)</h3>
+    <pre><code><span class="cm"># Rebuild Vite assets</span>
+npm run build
+
+<span class="cm"># Make sure APP_URL in .env matches the domain exactly</span>
+APP_URL=https://yourdomain.com</code></pre>
+
+    <h3>Uploaded files not accessible (/storage/* returns 404)</h3>
+    <pre><code><span class="cm"># Recreate the storage symlink</span>
+php artisan storage:link</code></pre>
+
+    <h3>File upload fails with 413 error</h3>
+    <p>Your web server or PHP is rejecting large files. For <strong>Nginx</strong>:</p>
+    <pre><code>client_max_body_size 60M;  <span class="cm"># in nginx.conf or server block</span></code></pre>
+    <p>For <strong>PHP</strong> (<code>php.ini</code>):</p>
+    <pre><code>upload_max_filesize = 55M
+post_max_size = 60M</code></pre>
+
+    <h3>Route cache stale after code changes</h3>
+    <pre><code>php artisan route:clear
+php artisan config:clear
+php artisan cache:clear</code></pre>
+
+    <h3>Blank page (Inertia / React not rendering)</h3>
+    <ul style="margin:10px 0 0 20px; color:#374151; font-size:14px; line-height:2;">
+      <li>Run <code>npm run build</code> and check for build errors.</li>
+      <li>Confirm <code>public/build/manifest.json</code> exists.</li>
+      <li>Check the browser console for JavaScript errors.</li>
+      <li>Ensure <code>APP_DEBUG=true</code> temporarily to see server errors.</li>
+    </ul>
+
+    <div class="callout success">
+      <div class="callout-icon">&#9989;</div>
+      <div class="callout-body">
+        <div class="callout-title">Quick health check command</div>
+        <code>php artisan about</code> prints a full summary of your environment, config, and installed packages — useful for verifying production config at a glance.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Highlight active nav link based on scroll position
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
